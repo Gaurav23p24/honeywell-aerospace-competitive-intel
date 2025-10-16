@@ -1,0 +1,21 @@
+# Honeywell Aerospace Analysis System - Environment Variables
+# Copy this file to .env and fill in your actual API keys
+
+# OpenAI API (for future LLM integration)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Tavily API (for news and web search)
+TAVILY_API_KEY=your_tavily_api_key_here
+
+# Skyvern API (for agentic browsing)
+SKYVERN_API_KEY=your_skyvern_api_key_here
+
+# LangSmith API (for tracing and monitoring)
+LANGSMITH_API_KEY=your_langsmith_api_key_here
+LANGSMITH_PROJECT=honeywell-analysis
+
+# Optional: Database settings
+DATABASE_URL=sqlite:///honeywell_products.db
+
+# Optional: Logging level
+LOG_LEVEL=INFO

@@ -1,0 +1,44 @@
+## Rules for Cursor
+
+### ALWAYS DO
+1. **Test after every change** - Run `python main.py` before moving on
+2. **Start with working code** - Begin with yfinance only, add tools one by one
+3. **Keep agents simple** - One clear job per agent, <150 lines each
+4. **Use real data immediately** - No mock data unless explicitly for testing
+5. **Ask before adding complexity** - Question if something needs 3+ files
+
+### NEVER DO
+- ❌ Add Docker/deployment configs
+- ❌ Create abstract base classes without reason
+- ❌ Implement all tools simultaneously
+- ❌ Add caching/optimization before basic flow works
+- ❌ Use mock data as permanent solution
+
+### When Stuck
+1. Show me the error message
+2. Show me the simplest possible fix
+3. Ask if we should simplify the approach
+4. Suggest rolling back if needed
+
+---
+
+## Open Questions
+
+**Before starting, clarify:**
+1. Which 5 Honeywell products to include in database?
+2. API keys available: OpenAI, Tavily, Skyvern?
+3. Should we cache API responses? (Suggest: No initially)
+4. What's the retry strategy for failed tools? (Suggest: Skip and continue)
+
+---
+
+## Success Criteria
+- ✅ PDF generated successfully
+- ✅ Data from 3+ sources
+- ✅ Analyst identifies 2+ competitive gaps
+- ✅ System handles tool failures gracefully
+- ✅ Total code <800 lines
+
+---
+
+**Philosophy: Working > Perfect. Simple > Complex. Test > Assume.**
