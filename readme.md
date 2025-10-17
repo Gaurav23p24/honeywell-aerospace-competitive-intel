@@ -1,6 +1,6 @@
 # 🚁 Honeywell Aerospace Competitive Analysis System
 
-A sophisticated multi-agent AI system that performs comprehensive competitive analysis of Honeywell Aerospace products against competitors, generating detailed PDF reports with real-time data from multiple sources.
+A multi-agent AI system that performs competitive analysis of Honeywell Aerospace products against competitors, generating detailed PDF reports with real-time data from multiple sources.
 
 ## 🌟 Overview
 
