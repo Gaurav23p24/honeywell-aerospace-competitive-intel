@@ -82,9 +82,14 @@ class CompetitiveAnalysisApp {
 
             if (response.ok && data.success) {
                 this.currentAnalysis = data.result;
-                this.displayResults(data.result);
+                // Use analysis_results if available, otherwise fall back to result
+                const analysisData = data.result.analysis_results || data.result;
+                this.displayResults(analysisData);
                 this.showAlert('Analysis completed successfully!', 'success');
                 this.loadReports(); // Refresh reports list
+                
+                // Trigger plane celebration animation
+                this.triggerPlaneCelebration();
             } else {
                 throw new Error(data.error || 'Analysis failed');
             }
@@ -129,7 +134,7 @@ class CompetitiveAnalysisApp {
         let html = `
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <div class="result-item">
+                    <div class="result-item aerospace-theme">
                         <h5><i class="fas fa-chart-line me-2"></i>Analysis Summary</h5>
                         <p class="mb-2"><strong>Product:</strong> ${result.honeywell_product || 'N/A'}</p>
                         <p class="mb-2"><strong>Comparison:</strong> ${result.competitor_query || 'N/A'}</p>
@@ -141,7 +146,7 @@ class CompetitiveAnalysisApp {
                     </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                    <div class="result-item">
+                    <div class="result-item aerospace-theme">
                         <h5><i class="fas fa-database me-2"></i>Data Sources</h5>
                         <p class="mb-2"><strong>Sources Used:</strong> ${result.data_sources_used?.length || 0}</p>
                         <p class="mb-0"><strong>Analysis Time:</strong> ${result.analysis_timestamp ? new Date(result.analysis_timestamp).toLocaleString() : 'N/A'}</p>
@@ -162,7 +167,7 @@ class CompetitiveAnalysisApp {
             result.competitive_gaps.forEach(gap => {
                 html += `
                     <div class="col-md-6 mb-3">
-                        <div class="result-item">
+                        <div class="result-item aerospace-theme">
                             <h6 class="text-${this.getImpactColor(gap.impact)}">${gap.category}</h6>
                             <p class="mb-2"><strong>Gap:</strong> ${gap.gap}</p>
                             <p class="mb-2"><strong>Impact:</strong> <span class="badge bg-${this.getImpactColor(gap.impact)}">${gap.impact}</span></p>
@@ -185,7 +190,7 @@ class CompetitiveAnalysisApp {
                 <div class="row">
                     <div class="col-12 mb-4">
                         <h5><i class="fas fa-lightbulb me-2"></i>Key Insights (${result.insights.length})</h5>
-                        <div class="result-item">
+                        <div class="result-item aerospace-theme">
                             <ul class="list-unstyled mb-0">
             `;
             
@@ -207,7 +212,7 @@ class CompetitiveAnalysisApp {
                 <div class="row">
                     <div class="col-12 mb-4">
                         <h5><i class="fas fa-target me-2"></i>Strategic Recommendations</h5>
-                        <div class="result-item">
+                        <div class="result-item aerospace-theme">
                             <ol class="mb-0">
             `;
             
@@ -376,6 +381,25 @@ class CompetitiveAnalysisApp {
             case 'low': return 'success';
             default: return 'secondary';
         }
+    }
+
+    triggerPlaneCelebration() {
+        // Create success overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'success-overlay';
+        document.body.appendChild(overlay);
+        
+        // Create flying plane
+        const plane = document.createElement('div');
+        plane.className = 'plane-celebration';
+        plane.innerHTML = '✈️';
+        document.body.appendChild(plane);
+        
+        // Remove elements after animation completes
+        setTimeout(() => {
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            if (plane.parentNode) plane.parentNode.removeChild(plane);
+        }, 3000);
     }
 }
 

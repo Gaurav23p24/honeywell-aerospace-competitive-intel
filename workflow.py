@@ -20,9 +20,15 @@ class AnalysisState(TypedDict):
     workflow_complete: bool
     error_message: Optional[str]
     
+    # Data flow between nodes
+    raw_data: Optional[Dict[str, Any]]
+    validated_data: Optional[Dict[str, Any]]
+    analysis: Optional[Dict[str, Any]]
+    
     # Results
     pdf_path: Optional[str]
     analysis_summary: Optional[str]
+    analysis_results: Optional[Dict[str, Any]]
 
 def create_analysis_workflow():
     """Create the LangGraph workflow for competitive analysis"""
@@ -50,6 +56,7 @@ def create_analysis_workflow():
             
             return {
                 **state,
+                "raw_data": raw_data,
                 "current_step": "validator"
             }
         except Exception as e:
@@ -66,17 +73,15 @@ def create_analysis_workflow():
         print("LangGraph: Validator checking data quality")
         
         try:
-            from agents.scout import ScoutAgent
             from agents.validator import ValidatorAgent
             
-            scout = ScoutAgent()
             validator = ValidatorAgent()
-            
-            raw_data = scout.hunt(state['honeywell_product'], state['competitor_query'])
+            raw_data = state.get('raw_data', {})
             validated_data = validator.validate(raw_data)
             
             return {
                 **state,
+                "validated_data": validated_data,
                 "current_step": "analyst"
             }
         except Exception as e:
@@ -93,16 +98,10 @@ def create_analysis_workflow():
         print("LangGraph: Analyst performing competitive analysis")
         
         try:
-            from agents.scout import ScoutAgent
-            from agents.validator import ValidatorAgent
             from agents.analyst import AnalystAgent
             
-            scout = ScoutAgent()
-            validator = ValidatorAgent()
             analyst = AnalystAgent()
-            
-            raw_data = scout.hunt(state['honeywell_product'], state['competitor_query'])
-            validated_data = validator.validate(raw_data)
+            validated_data = state.get('validated_data', {})
             analysis = analyst.analyze(validated_data)
             
             # Create summary
@@ -113,6 +112,7 @@ def create_analysis_workflow():
             
             return {
                 **state,
+                "analysis": analysis,
                 "analysis_summary": summary,
                 "current_step": "writer"
             }
@@ -130,19 +130,14 @@ def create_analysis_workflow():
         print("LangGraph: Writer generating PDF report")
         
         try:
-            from agents.scout import ScoutAgent
-            from agents.validator import ValidatorAgent
-            from agents.analyst import AnalystAgent
             from agents.writer import WriterAgent
             
-            scout = ScoutAgent()
-            validator = ValidatorAgent()
-            analyst = AnalystAgent()
             writer = WriterAgent()
+            analysis = state.get('analysis', {})
             
-            raw_data = scout.hunt(state['honeywell_product'], state['competitor_query'])
-            validated_data = validator.validate(raw_data)
-            analysis = analyst.analyze(validated_data)
+            # Add raw data to analysis for PDF generation
+            if 'raw_data' in state:
+                analysis['raw_data'] = state['raw_data']
             
             pdf_path = writer.write_report(
                 analysis,
@@ -153,6 +148,7 @@ def create_analysis_workflow():
             return {
                 **state,
                 "pdf_path": pdf_path,
+                "analysis_results": analysis,
                 "current_step": "complete",
                 "workflow_complete": True
             }
@@ -195,6 +191,19 @@ def create_analysis_workflow():
     
     # Compile the workflow
     memory = MemorySaver()
+    
+    # Add LangSmith tracing if API key is available
+    from config import get_api_key
+    langsmith_key = get_api_key('langsmith')
+    if langsmith_key and langsmith_key != 'your_langsmith_api_key_here':
+        try:
+            import os
+            os.environ['LANGSMITH_API_KEY'] = langsmith_key
+            os.environ['LANGSMITH_PROJECT'] = 'honeywell-analysis'
+            print("LangSmith tracing enabled")
+        except Exception as e:
+            print(f"LangSmith setup failed: {e}")
+    
     app = workflow.compile(checkpointer=memory)
     
     return app
@@ -212,8 +221,12 @@ def run_analysis_workflow(honeywell_product: str, competitor_query: str) -> Dict
         current_step="scout",
         workflow_complete=False,
         error_message=None,
+        raw_data=None,
+        validated_data=None,
+        analysis=None,
         pdf_path=None,
-        analysis_summary=None
+        analysis_summary=None,
+        analysis_results=None
     )
     
     # Run workflow

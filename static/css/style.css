@@ -1,15 +1,15 @@
 /* Honeywell Aerospace Competitive Analysis - Modern CSS */
 
 :root {
-    --primary-color: #1e3a8a;
-    --secondary-color: #3b82f6;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
+    --primary-color: #d32f2f; /* Honeywell Red */
+    --secondary-color: #f44336; /* Lighter Red */
+    --success-color: #4caf50; /* Keep green for success */
+    --warning-color: #ff9800; /* Keep orange for warnings */
+    --danger-color: #f44336; /* Red for danger */
     --dark-color: #1f2937;
     --light-color: #f8fafc;
-    --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-    --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    --gradient-primary: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); /* Honeywell Red Gradient */
+    --gradient-success: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -64,6 +64,91 @@ html {
     bottom: 0;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     opacity: 0.3;
+}
+
+/* Aerospace Rocket Animations */
+.rocket-trail {
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    animation: rocketTrail 3s ease-in-out infinite;
+}
+
+.rocket-trail:nth-child(1) {
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.rocket-trail:nth-child(2) {
+    left: 40%;
+    animation-delay: 1s;
+}
+
+.rocket-trail:nth-child(3) {
+    left: 60%;
+    animation-delay: 2s;
+}
+
+.rocket-trail:nth-child(4) {
+    left: 80%;
+    animation-delay: 0.5s;
+}
+
+@keyframes rocketTrail {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(100vh) scaleY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(50vh) scaleY(1);
+    }
+}
+
+/* Floating Rockets */
+.floating-rocket {
+    position: absolute;
+    font-size: 2rem;
+    color: rgba(255,255,255,0.3);
+    animation: floatRocket 8s ease-in-out infinite;
+}
+
+.floating-rocket:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-rocket:nth-child(2) {
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.floating-rocket:nth-child(3) {
+    top: 40%;
+    left: 5%;
+    animation-delay: 4s;
+}
+
+@keyframes floatRocket {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.3;
+    }
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-10px) rotate(-5deg);
+        opacity: 0.4;
+    }
+    75% {
+        transform: translateY(-15px) rotate(3deg);
+        opacity: 0.5;
+    }
 }
 
 .hero-section .container {
@@ -190,7 +275,7 @@ html {
 /* Navigation */
 .navbar {
     backdrop-filter: blur(10px);
-    background: rgba(30, 58, 138, 0.95) !important;
+    background: rgba(211, 47, 47, 0.95) !important; /* Honeywell Red */
     box-shadow: var(--shadow-md);
 }
 
@@ -231,11 +316,74 @@ html {
     box-shadow: var(--shadow-sm);
     border-left: 4px solid var(--success-color);
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: #000000; /* Force black text */
+}
+
+.result-item h5,
+.result-item h6,
+.result-item p,
+.result-item li,
+.result-item span {
+    color: #000000 !important; /* Force black text for all elements */
+}
+
+.result-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--success-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .result-item:hover {
     transform: translateX(5px);
     box-shadow: var(--shadow-md);
+}
+
+.result-item:hover::before {
+    opacity: 1;
+}
+
+/* Aerospace-themed result cards */
+.result-item.aerospace-theme {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-left: 4px solid var(--primary-color);
+    color: #000000; /* Force black text */
+}
+
+.result-item.aerospace-theme h5,
+.result-item.aerospace-theme h6,
+.result-item.aerospace-theme p,
+.result-item.aerospace-theme li,
+.result-item.aerospace-theme span {
+    color: #000000 !important; /* Force black text */
+}
+
+.result-item.aerospace-theme::after {
+    content: '🚀';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    opacity: 0.3;
+    animation: rocketPulse 2s ease-in-out infinite;
+}
+
+@keyframes rocketPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.6;
+    }
 }
 
 .confidence-badge {
@@ -413,17 +561,55 @@ html {
     }
 }
 
-/* Print styles */
-@media print {
-    .navbar,
-    .btn,
-    .hero-section,
-    footer {
-        display: none !important;
+/* Plane Flying Animation */
+.plane-celebration {
+    position: fixed;
+    top: 50%;
+    left: -100px;
+    font-size: 3rem;
+    color: var(--primary-color);
+    z-index: 9999;
+    animation: flyAcross 3s ease-in-out forwards;
+    pointer-events: none;
+}
+
+@keyframes flyAcross {
+    0% {
+        left: -100px;
+        transform: translateY(-50%) rotate(0deg);
+        opacity: 0;
     }
-    
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        left: calc(100vw + 100px);
+        transform: translateY(-50%) rotate(5deg);
+        opacity: 0;
+    }
+}
+
+/* Success celebration overlay */
+.success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 9998;
+    pointer-events: none;
+    animation: fadeOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+    0%, 80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }

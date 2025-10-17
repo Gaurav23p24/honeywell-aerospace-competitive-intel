@@ -11,6 +11,8 @@ langchain>=0.2.0
 tavily-python>=0.3.0
 skyvern>=0.1.0
 openai>=1.0.0
+browser-use>=0.8.1
+playwright>=1.40.0
 
 # Phase 5: Web UI
 flask>=3.0.0

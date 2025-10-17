@@ -147,8 +147,30 @@ class ScoutAgent:
     
     def _get_tavily_news(self, honeywell_product: str, competitor_query: str) -> Dict[str, Any]:
         """Get Tavily news data - OPTIMIZED FOR SPEED"""
-        query = f"{honeywell_product} {competitor_query} aerospace news"
-        return self.tavily_tool.search_news(query, max_results=3)  # Reduced from 5 to 3
+        # Use simpler, more effective search queries
+        queries = [
+            f"{honeywell_product} aerospace news",
+            f"Honeywell aerospace {honeywell_product}",
+            f"aerospace engine news {honeywell_product}"
+        ]
+        
+        all_results = []
+        for query in queries:
+            try:
+                result = self.tavily_tool.search_news(query, max_results=2)
+                if result.get('news_items'):
+                    all_results.extend(result['news_items'])
+            except Exception as e:
+                logger.warning(f"Tavily search failed for '{query}': {e}")
+        
+        # Return combined results
+        return {
+            "query": f"{honeywell_product} aerospace news",
+            "news_items": all_results[:5],  # Limit to 5 total results
+            "total_results": len(all_results),
+            "data_source": "tavily",
+            "search_type": "news"
+        }
     
     def _get_tavily_competitive_intelligence(self, honeywell_product: str, competitor_query: str) -> Dict[str, Any]:
         """Get Tavily competitive intelligence"""

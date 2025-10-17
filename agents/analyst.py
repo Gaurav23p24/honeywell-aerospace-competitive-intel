@@ -34,7 +34,9 @@ class AnalystAgent:
             "recommendations": [],
             "confidence_score": 0.0,
             "data_sources_used": [],
-            "analysis_timestamp": None
+            "analysis_timestamp": None,
+            "raw_data": validated_data["original_data"],  # Include raw data for comprehensive PDF
+            "quality_scores": validated_data.get("quality_scores", {})  # Include quality scores
         }
         
         # Get source data
@@ -67,6 +69,10 @@ class AnalystAgent:
                 news_analysis = self._analyze_news_data(sources[source_name])
                 analysis["insights"].extend(news_analysis["insights"])
                 analysis["competitive_gaps"].extend(news_analysis["gaps"])
+                
+                # Add Tavily data to data sources used
+                if source_name not in analysis["data_sources_used"]:
+                    analysis["data_sources_used"].append(source_name)
         
         # Perform product specifications analysis
         for source_name in sources.keys():
@@ -221,41 +227,60 @@ class AnalystAgent:
         return insights
     
     def _analyze_news_data(self, news_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze news and intelligence data"""
+        """Analyze news and intelligence data for competitor recent activity"""
         insights = []
         gaps = []
         
         try:
-            results = news_data.get("results", [])
-            if not results:
+            news_items = news_data.get("news_items", [])
+            if not news_items:
                 return {"insights": insights, "gaps": gaps}
             
-            # Analyze news content for competitive insights
-            for result in results[:5]:  # Analyze top 5 results
-                content = result.get("content", "").lower()
-                title = result.get("title", "").lower()
+            # Analyze news content for competitive insights and recent activity
+            competitor_activity = []
+            technology_trends = []
+            market_developments = []
+            
+            for item in news_items[:5]:  # Analyze top 5 results
+                title = item.get("title", "").lower()
+                content = item.get("content", "").lower()
+                url = item.get("url", "")
                 
-                # Look for competitive keywords
-                competitive_keywords = ["competition", "competitor", "market share", "advantage", "disadvantage"]
-                if any(keyword in content or keyword in title for keyword in competitive_keywords):
-                    insights.append(f"News analysis: {result.get('title', 'Untitled')[:100]}...")
+                # Look for recent activity indicators
+                recent_keywords = ["announced", "launched", "signed", "partnership", "contract", "deal", "investment", "expansion"]
+                if any(keyword in title or keyword in content for keyword in recent_keywords):
+                    competitor_activity.append(f"Recent activity: {item.get('title', 'Untitled')[:80]}...")
                 
                 # Look for technology trends
-                tech_keywords = ["technology", "innovation", "development", "breakthrough"]
-                if any(keyword in content or keyword in title for keyword in tech_keywords):
-                    insights.append(f"Technology trend identified: {result.get('title', 'Untitled')[:80]}...")
+                tech_keywords = ["technology", "innovation", "development", "breakthrough", "new engine", "next generation"]
+                if any(keyword in title or keyword in content for keyword in tech_keywords):
+                    technology_trends.append(f"Technology trend: {item.get('title', 'Untitled')[:70]}...")
+                
+                # Look for market developments
+                market_keywords = ["market share", "competition", "competitive", "advantage", "disadvantage", "pricing"]
+                if any(keyword in title or keyword in content for keyword in market_keywords):
+                    market_developments.append(f"Market development: {item.get('title', 'Untitled')[:70]}...")
+            
+            # Add insights based on findings
+            insights.extend(competitor_activity[:3])  # Top 3 recent activities
+            insights.extend(technology_trends[:2])   # Top 2 tech trends
+            insights.extend(market_developments[:2])  # Top 2 market developments
             
             # Generate gaps based on news patterns
-            if len(results) >= 3:
-                insights.append(f"Strong news coverage with {len(results)} relevant articles found")
-            elif len(results) >= 1:
+            if len(news_items) >= 3:
+                insights.append(f"Strong industry coverage with {len(news_items)} relevant articles found")
+            elif len(news_items) >= 1:
                 gaps.append({
                     "category": "Market Intelligence",
                     "gap": "Limited recent news coverage",
-                    "metric": f"Only {len(results)} relevant articles",
+                    "metric": f"Only {len(news_items)} relevant articles",
                     "impact": "Medium",
                     "opportunity": "Monitor industry news more closely for competitive intelligence"
                 })
+            
+            # Add specific competitor activity insights
+            if competitor_activity:
+                insights.append(f"Competitor recent activity detected: {len(competitor_activity)} developments found")
             
         except Exception as e:
             logger.error(f"Analyst: Error in news analysis: {e}")

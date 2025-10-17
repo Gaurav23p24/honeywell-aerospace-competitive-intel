@@ -38,13 +38,13 @@ class TavilyTool:
         try:
             logger.info(f"Tavily: Searching news for '{query}'")
             
-            # Search for news
+            # Search for news with better parameters
             response = self.client.search(
                 query=query,
-                search_depth="basic",
+                search_depth="advanced",
                 max_results=max_results,
-                include_domains=["reuters.com", "bloomberg.com", "wsj.com", "ft.com", "aviationweek.com"],
-                exclude_domains=["wikipedia.org"]
+                include_domains=["reuters.com", "bloomberg.com", "wsj.com", "ft.com", "aviationweek.com", "flightglobal.com", "ainonline.com"],
+                exclude_domains=["wikipedia.org", "reddit.com"]
             )
             
             # Process results
