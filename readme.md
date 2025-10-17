@@ -30,7 +30,7 @@ graph TD
     
     B --> I[yfinance Tool]
     B --> J[Tavily Tool]
-    B --> K[Skyvern Tool]
+    B --> K[Browser-use Tool]
     B --> L[Browser-use Tool]
 ```
 
@@ -68,7 +68,7 @@ graph TD
 ### Data Sources & APIs
 - **yfinance** - Real-time financial and stock data
 - **Tavily API** - Recent news and web search
-- **Skyvern API** - Agentic web browsing and data extraction
+- **Browser-use API** - Agentic web browsing and data extraction
 - **Browser-use** - Advanced web automation
 - **SEC EDGAR** - Financial filings and regulatory data
 
@@ -98,7 +98,7 @@ honeywell_analysis/
 ├── 🛠️ tools/                      # Data source integrations
 │   ├── yfinance_tool.py           # Financial data tool
 │   ├── tavily_tool.py             # News search tool
-│   ├── skyvern_tool.py            # Web browsing tool
+│   ├── Browser-use_tool.py            # Web browsing tool
 │   └── browser_use_tool.py        # Browser automation tool
 ├── 🎨 static/                     # Web assets
 │   ├── css/style.css              # Stylesheet
@@ -160,8 +160,8 @@ OPENAI_API_KEY=your_openai_api_key_here
 # Tavily API (for news and web search)
 TAVILY_API_KEY=your_tavily_api_key_here
 
-# Skyvern API (for agentic browsing)
-SKYVERN_API_KEY=your_skyvern_api_key_here
+# Browser-use API (for agentic browsing)
+Browser-use_API_KEY=your_Browser-use_api_key_here
 
 # LangSmith API (for tracing and monitoring)
 LANGSMITH_API_KEY=your_langsmith_api_key_here
@@ -242,7 +242,7 @@ Run the test suite to verify system functionality:
 python test_tools.py          # Test data source tools
 python test_system.py         # Test complete workflow
 python test_browser_use.py    # Test browser automation
-python test_skyvern_direct.py # Test Skyvern integration
+python test_Browser-use_direct.py # Test Browser-use integration
 
 # Test specific agents
 python -c "from agents.scout import ScoutAgent; print('Scout OK')"
@@ -323,18 +323,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **OpenAI** - GPT-4 language model
 - **LangChain/LangGraph** - Agent orchestration framework
 - **Tavily** - Real-time search API
-- **Skyvern** - Web automation platform
-
-## 📞 Support
-
-For questions, issues, or contributions:
-
-- **GitHub Issues**: [Create an issue](https://github.com/amithkoneru/Mini-Project-2/issues)
-- **Documentation**: See inline code comments and docstrings
-- **Examples**: Check `test_*.py` files for usage examples
+- **Browser-use** - Web automation platform
 
 ---
 
 **Built with ❤️ for the aerospace industry**
-
-*Last updated: January 2025*
